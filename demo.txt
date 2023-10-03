@@ -1,0 +1,26 @@
+Structura prezentare:
+- Purpose of terraform private registry
+	 Terraform cloud s private registry work similarly to the public terraform registry (registry.terraform.io), 
+	 registry that moust of you heard or already are using, and it helps you share accross the organization terraform providers or terraform modules.
+- How do we find providers available for instalation?
+	Implement Provider registry protocol
+	Is what terraform cli uses to discover metadata about providers available accross the organization for installation and to locate the distribution packages for the selected provider.
+	Basically the protocol is helping identify providers available for installation.
+- Flow of terraform provider registry protocol
+	Each terraform provider has an associated address which uniquely identifies it within Terraform file.The provider address look like this: hostname/namespace/type;
+	Where the hostname is the registry host, the namespace is the purpose within eatch organization and type is the provider name, something line aws, azurerm.
+	
+	Components of the protocol:
+	 - Service Discovery
+	 - List available versions :namespace/:type/versions
+	 - Find the provider package 	:namespace/:type/:version/download/:os/:arch
+	 - Download provider package content 	:namespace/:type/:version/download/:os/:arch/filename
+
+
+	The flow of downloading and installing terraform providers starts with service discovery, witch happens through this endpoint <hostname>/.well-known/terraform.json. When a user ask for a provider, custom provider, terraform will contact the provider s hostname and ask for the implementations of any of its protocols that are found as a result of calling the descovery endpoint.
+	Also terraform provider registry protocol establishes two further operations: List available versions and find provider package.
+	List available versions allows terraform to query for existing versions of a given provider based on what it was configured in the required_provider section in terraform files
+	Find a provider package allows terraform to get information about where to download a particular package of a provider habing extra argument like os and architecture.
+	
+	
+- Demo time
